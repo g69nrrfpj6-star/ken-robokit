@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>KEN RoboKit By KaGa</title>
+  <style>
+    :root{
+      --bg:#0d0f12; --panel:#171a20; --panel2:#20242c; --text:#f5f5f5;
+      --muted:#a8adb7; --gold:#d6b15f; --line:#2c313a; --danger:#ff6b6b;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--bg);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:var(--text)}
+    .phone{max-width:430px;min-height:100vh;margin:0 auto;background:linear-gradient(180deg,#0b0d10,#13161c);padding:22px 18px 26px}
+    .top{text-align:center;padding:18px 0 14px}
+    .logo{font-size:54px;font-weight:900;letter-spacing:-5px;line-height:.9}
+    .brand{font-size:28px;font-weight:800;margin-top:12px}
+    .by{color:var(--gold);font-size:14px;margin-top:2px}
+    .search{margin:18px 0 18px;display:flex;background:var(--panel);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+    .search input{flex:1;background:transparent;border:0;color:var(--text);padding:15px 16px;font-size:16px;outline:none}
+    .search button{background:var(--gold);border:0;color:#111;padding:0 16px;font-weight:800}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .card{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:18px 14px;min-height:96px;cursor:pointer}
+    .card:active{transform:scale(.99)}
+    .icon{font-size:25px;margin-bottom:8px}
+    .title{font-weight:800;font-size:16px}
+    .desc{color:var(--muted);font-size:12px;margin-top:5px}
+    .section{margin-top:20px}
+    .section h3{font-size:15px;color:var(--muted);font-weight:700;margin:0 0 10px}
+    .item{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:10px}
+    .item b{display:block;margin-bottom:5px}
+    .tag{display:inline-block;border:1px solid var(--gold);color:var(--gold);border-radius:999px;padding:2px 8px;font-size:11px;margin-top:8px;margin-right:4px}
+    .screen{display:none}
+    .screen.active{display:block}
+    .header{display:flex;align-items:center;gap:10px;padding:12px 0 18px}
+    .back{border:1px solid var(--line);background:var(--panel);color:var(--text);border-radius:12px;padding:9px 12px}
+    .header h2{margin:0;font-size:22px}
+    .detail{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:18px}
+    .detail h1{margin:0 0 6px;font-size:30px}
+    .sub{color:var(--gold);font-weight:700;margin-bottom:16px}
+    .row{border-top:1px solid var(--line);padding:14px 0}
+    .row:first-of-type{border-top:0}
+    .row h4{margin:0 0 8px;color:var(--muted)}
+    ol{padding-left:21px;margin:0}
+    li{margin:7px 0}
+    .fab{position:fixed;right:calc(50% - 205px);bottom:24px;background:var(--gold);color:#111;border:0;border-radius:999px;padding:14px 18px;font-weight:900;box-shadow:0 10px 30px #0008}
+    textarea,.field{width:100%;background:var(--panel2);border:1px solid var(--line);border-radius:12px;color:var(--text);padding:12px;margin:8px 0 12px;font-size:15px}
+    textarea{min-height:86px}
+    .save{width:100%;background:var(--gold);color:#111;border:0;border-radius:14px;padding:14px;font-weight:900;font-size:16px}
+    @media(max-width:430px){.fab{right:18px}}
+  </style>
+</head>
+<body>
+  <main class="phone">
+    <section id="home" class="screen active">
+      <div class="top">
+        <div class="logo">KEN</div>
+        <div class="brand">RoboKit</div>
+        <div class="by">By KaGa</div>
+      </div>
+
+      <div class="search">
+        <input id="q" placeholder="E1327, Servo ON NG, 인터록..." />
+        <button onclick="openTrouble()">검색</button>
+      </div>
+
+      <div class="grid">
+        <div class="card" onclick="show('trouble')">
+          <div class="icon">🔧</div><div class="title">트러블슈팅</div>
+          <div class="desc">에러 · 증상 · 조치 검색</div>
+        </div>
+        <div class="card" onclick="show('interlock')">
+          <div class="icon">🔗</div><div class="title">인터록맵</div>
+          <div class="desc">Robot ↔ PLC ↔ Jig</div>
+        </div>
+        <div class="card" onclick="show('signals')">
+          <div class="icon">📡</div><div class="title">신호대응표</div>
+          <div class="desc">DI/DO, PLC I/O 대응</div>
+        </div>
+        <div class="card" onclick="show('note')">
+          <div class="icon">📝</div><div class="title">현장노트</div>
+          <div class="desc">KEN Verified 기록</div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h3>최근 KEN Verified</h3>
+        <div class="item" onclick="showDetail('E1327')">
+          <b>E1327 / E-CON Alarm</b>
+          HMI 24V 커넥터 접촉 확인 필요
+          <br><span class="tag">Kawasaki</span><span class="tag">E-CON</span>
+        </div>
+        <div class="item" onclick="showDetail('Servo ON NG')">
+          <b>Servo ON NG</b>
+          Safety, E-Stop, Amp Alarm 순서 확인
+          <br><span class="tag">Servo</span><span class="tag">Safety</span>
+        </div>
+      </div>
+    </section>
+
+    <section id="trouble" class="screen">
+      <div class="header"><button class="back" onclick="show('home')">←</button><h2>트러블슈팅</h2></div>
+      <div class="search"><input placeholder="문제 검색..." value="E1327"/><button onclick="showDetail('E1327')">검색</button></div>
+      <div class="item" onclick="showDetail('E1327')"><b>E1327</b>E-CON / 24V / Connector / Power Block</div>
+      <div class="item" onclick="showDetail('Servo ON NG')"><b>Servo ON NG</b>Safety 상태와 Servo Power 확인</div>
+      <div class="item"><b>DeviceNet Timeout</b>통신 상태, Node, Cable 확인</div>
+    </section>
+
+    <section id="interlock" class="screen">
+      <div class="header"><button class="back" onclick="show('home')">←</button><h2>인터록맵</h2></div>
+      <div class="item"><b>R01 ↔ R02</b>Step Complete / Request / Clear</div>
+      <div class="item"><b>Robot ↔ PLC</b>Cycle Start / Home Position / Fault</div>
+      <div class="item"><b>Robot ↔ Jig</b>Clamp OK / Unclamp OK / Part Detect</div>
+    </section>
+
+    <section id="signals" class="screen">
+      <div class="header"><button class="back" onclick="show('home')">←</button><h2>신호대응표</h2></div>
+      <div class="item"><b>Robot Ready</b>PLC OUT100 → Robot IN200</div>
+      <div class="item"><b>Weld Complete</b>Robot OUT400 → PLC IN350</div>
+      <div class="item"><b>Home Position</b>Robot OUT120 → PLC IN220</div>
+    </section>
+
+    <section id="note" class="screen">
+      <div class="header"><button class="back" onclick="show('home')">←</button><h2>현장노트 등록</h2></div>
+      <input class="field" placeholder="제목 / 에러코드" />
+      <textarea placeholder="증상"></textarea>
+      <textarea placeholder="원인"></textarea>
+      <textarea placeholder="조치내용"></textarea>
+      <input class="field" placeholder="태그: Kawasaki, E-CON, 24V" />
+      <button class="save">KEN Verified 저장</button>
+    </section>
+
+    <section id="detail" class="screen">
+      <div class="header"><button class="back" onclick="show('home')">←</button><h2>상세</h2></div>
+      <div class="detail">
+        <h1 id="dtitle">E1327</h1>
+        <div class="sub">✅ KEN Verified</div>
+        <div class="row"><h4>증상</h4><p>E-CON 알람 발생, 로봇 동작 불가 또는 Ready 상태 불안정.</p></div>
+        <div class="row"><h4>가능 원인</h4><p>HMI 24V 불안정, 커넥터 접촉 불량, 파워 시퀀스, 파워블록, I/O 신호 불안정.</p></div>
+        <div class="row"><h4>확인 순서</h4><ol><li>HMI 24V 확인</li><li>커넥터 체결 상태 확인</li><li>파워 시퀀스 확인</li><li>파워블록 확인</li><li>재발 여부 기록</li></ol></div>
+        <div class="row"><h4>메모</h4><p>파워블록 교체 전 24V와 커넥터부터 확인.</p></div>
+        <span class="tag">Kawasaki</span><span class="tag">E-CON</span><span class="tag">24V</span>
+      </div>
+    </section>
+  </main>
+
+<script>
+function show(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+function showDetail(title){
+  document.getElementById('dtitle').innerText = title || 'E1327';
+  show('detail');
+}
+function openTrouble(){
+  const q = document.getElementById('q').value.trim();
+  if(q) showDetail(q); else show('trouble');
+}
+</script>
+</body>
+</html>
